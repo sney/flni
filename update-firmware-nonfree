@@ -30,7 +30,7 @@ signature = "linux-firmware-" + firmware_latest + ".tar.asc"
 tarball = "linux-firmware-" + firmware_latest + ".tar"
 
 print("We will now download " + tarball_gz + " and verify it with " + signature + ".")
-confirm = input("The firmware files will then be installed to /lib/firmware. Does this look right? (Y/N)")
+confirm = input("The firmware files will then be installed to " + config.firmwaredir + ". Does this look right? (Y/N)")
 
 if confirm == "Y" or confirm == "y":
 	pass
