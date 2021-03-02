@@ -1,0 +1,45 @@
+#!/usr/bin/env python3
+
+#######################################################################
+# This file is part of flni.
+#
+# Copyright (C) 2021 by Jesse Rhodes.
+#
+# flni is distributed under the MIT license.  See the file
+# LICENSE for distribution details.
+#######################################################################
+
+module_dir = "/usr/local/lib/flni/modules" # Proper python packaging will arrive with version 0.2
+
+import sys
+sys.path.append(module_dir)
+
+import flni
+import config
+
+# Set up the environment
+temp_flni = flni.setup()
+firmware_latest = flni.get_latest_firmware()
+
+# Do we even need to run?
+flni.check_installed(firmware_latest, temp_flni)
+
+# We got this far, so here are our filenames
+tarball_gz = "linux-firmware-" + firmware_latest + ".tar.gz"
+signature = "linux-firmware-" + firmware_latest + ".tar.asc"
+tarball = "linux-firmware-" + firmware_latest + ".tar"
+
+print("We will now download " + tarball_gz + " and verify it with " + signature + ".")
+confirm = input("The firmware files will then be installed to /lib/firmware. Does this look right? (Y/N)")
+
+if confirm == "Y" or confirm == "y":
+	pass
+else:
+	flni.cleanup(temp_flni)
+	exit("Install aborted.")
+
+
+flni.download(tarball_gz, tarball, signature)
+flni.verify(tarball, signature, temp_flni)
+flni.install(tarball, firmware_latest, temp_flni)
+flni.cleanup(temp_flni)
