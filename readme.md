@@ -7,4 +7,6 @@ To install: download flni-main.zip from the Code button above, unpack, and run "
 
 To use: run "update-firmware-nonfree"
 
+Developed for, and tested on, Debian 10 (buster); will probably work unmodified on any debian derivative.
+
 Coming soon: command line switches! better documentation! big-screen license warnings! surround sound! Ok, maybe not the last one. 
