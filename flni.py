@@ -35,7 +35,6 @@ def get_latest_firmware():
 	# Scrape webpage for latest tag.
 	source = requests.get(config.tagurl)
 	tags = source.text
-#	tags = open("tags.html", "r")
 
 	soup = bs4.BeautifulSoup(tags, 'html.parser')
 
@@ -147,7 +146,7 @@ def install(tb, fl, tf):
 		print("Successfully installed " + pre + " to " + config.firmwaredir + ". You may want to update your initramfs.")
 	else:
 		cleanup(tf)
-		exit("Something went wrong. Please ensure that we are running as root and that " + config.install_prefix + config.firmwaredir + " is writable.")
+		exit("Something went wrong. Please ensure that we are running as root and that " + config.firmwaredir + " is writable.")
 
 	# Install licenses
 	if not os.path.exists(config.licensedir):
