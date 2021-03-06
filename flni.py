@@ -102,12 +102,14 @@ def verify(tb, sg, tf):
 	archive_sig = open(sg, "rb")
 
 
-	verified = gpg.verify_file(archive_sig, tb)
-	if verified:
-		print("Good signature, continuing")
-	else:
+	try:
+		gpg.verify_file(archive_sig, tb)
+	except:
 		cleanup(tf)
 		exit("BAD signature, exiting.")
+	else:
+		print("Good signature, continuing")
+
 
 
 def check_installed(fl, tf):
@@ -140,13 +142,14 @@ def install(tb, fl, tf):
 
 	os.chdir(wdir)
 
-	install_files = subprocess.run(["./copy-firmware.sh", "-v", config.firmwaredir]) # Roll that beautiful scrolling output footage
-
-	if install_files.returncode == 0:
-		print("Successfully installed " + pre + " to " + config.firmwaredir + ". You may want to update your initramfs.")
-	else:
+	try:
+		subprocess.run(["./copy-firmware.sh", "-v", config.firmwaredir]) # Roll that beautiful scrolling output footage
+	except:
 		cleanup(tf)
 		exit("Something went wrong. Please ensure that we are running as root and that " + config.firmwaredir + " is writable.")
+	else:
+		print("Successfully installed " + pre + " to " + config.firmwaredir + ". You may want to update your initramfs.")
+
 
 	# Install licenses
 	if not os.path.exists(config.licensedir):
@@ -155,11 +158,9 @@ def install(tb, fl, tf):
 	for files in os.listdir(wdir):
 		if files.startswith("LICENCE") or files.startswith("LICENCE") or files == "WHENCE": # You'd think they could agree on 1 spelling for this
 			shutil.copy(files,config.licensedir)
-
 	# Log installed version
-	f = open(config.fpi_log, "w")
-	f.write(fl)
-	f.close()
+	with open(config.fpi_log, "w") as f:
+		f.write(fl)
 
 
 def setup():
