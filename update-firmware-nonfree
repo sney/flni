@@ -9,9 +9,10 @@
 # LICENSE for distribution details.
 #######################################################################
 
-module_dir = "/usr/local/lib/flni/modules" # Proper python packaging will arrive with version 0.2
+module_dir = "/usr/local/lib/flni/modules"  # Proper python packaging will arrive with version 0.2
 
 import sys
+
 sys.path.append(module_dir)
 
 import flni
@@ -30,13 +31,17 @@ signature = "linux-firmware-" + firmware_latest + ".tar.asc"
 tarball = "linux-firmware-" + firmware_latest + ".tar"
 
 print("We will now download " + tarball_gz + " and verify it with " + signature + ".")
-confirm = input("The firmware files will then be installed to " + config.firmwaredir + ". Does this look right? (Y/N)")
+confirm = input(
+    "The firmware files will then be installed to "
+    + config.firmwaredir
+    + ". Does this look right? (Y/N)"
+)
 
 if confirm == "Y" or confirm == "y":
-	pass
+    pass
 else:
-	flni.cleanup(temp_flni)
-	exit("Install aborted.")
+    flni.cleanup(temp_flni)
+    exit("Install aborted.")
 
 
 flni.download(tarball_gz, tarball, signature)
