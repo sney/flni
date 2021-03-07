@@ -162,7 +162,7 @@ def install(tb, fl, tf):
         )  # Roll that beautiful scrolling output footage
     except:
         cleanup(tf)
-        exit(
+        print(
             "Something went wrong. Please ensure that we are running as root and that "
             + config.firmwaredir
             + " is writable."
@@ -176,9 +176,32 @@ def install(tb, fl, tf):
             + ". You may want to update your initramfs."
         )
 
+    # Log installed files
+    filelist = []
+
+    with open("WHENCE", "r") as f:
+        for strings in f:
+            if (
+                strings.startswith("File:")
+            ):
+                filename = strings.replace("File: ", "")
+                filelist.append(filename)
+
+    with open(config.files_log, "w") as g:
+        for names in filelist:
+            g.write(names)
+
+
+
     # Install licenses
     if not os.path.exists(config.licensedir):
         os.makedirs(config.licensedir)
+
+    print(
+        "Installing firmware licenses to "
+        + config.licensedir
+        + "."
+    )
 
     for files in os.listdir(wdir):
         if (
@@ -187,9 +210,11 @@ def install(tb, fl, tf):
             or files == "WHENCE"
         ):  # You'd think they could agree on 1 spelling for this
             shutil.copy(files, config.licensedir)
+
     # Log installed version
     with open(config.fpi_log, "w") as f:
         f.write(fl)
+
 
 
 def setup():

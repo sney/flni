@@ -20,7 +20,13 @@ firmwaredir = "/lib/firmware"
 package_prefix = "share/flni"
 
 signing_key = os.path.join(install_prefix, package_prefix, "signing-key.asc")
+
+# firmware previously installed
 fpi_log = os.path.join(
     install_prefix, package_prefix, "firmware_installed"
-)  # firmware previously installed
+)
+files_log = os.path.join(
+    install_prefix, package_prefix, "firmware_filelist"
+)
+
 licensedir = os.path.join(install_prefix, package_prefix, "firmware_licenses")
