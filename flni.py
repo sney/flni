@@ -254,7 +254,13 @@ def uninstall():
         "Removing empty directories."
     )
     subprocess.run(["find", config.firmwaredir, "-type", "d", "-empty", "-delete"])
-#            filelist.append(files.rstrip())
+
+    print(
+        "Removing installer logs."
+    )
+    os.remove(config.fpi_log)
+    os.remove(config.files_log)
+
 
 def setup():
     temp_flni = tempfile.mkdtemp()
