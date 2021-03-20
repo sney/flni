@@ -131,8 +131,8 @@ def check_installed(fl, tf):
             print(
                 "Previous firmware on this system: "
                 + firmware_installed
-                + "Upgrading to "
-                + firmware_latest
+                + "\n Upgrading to "
+                + fl
             )
     else:
         print(
@@ -184,12 +184,15 @@ def install(tb, fl, tf):
             if (
                 strings.startswith("File:")
             ):
-                filename = strings.replace("File: ", "")
-                filelist.append(filename)
+                f1 = strings.replace("File:", "")
+                f2 = f1.replace('"', '')
+                f3 = f2.lstrip()
+                filelist.append(f3)
 
     with open(config.files_log, "w") as g:
         for names in filelist:
-            g.write(names)
+            if os.path.exists(os.path.join(config.firmwaredir, names.strip())):
+                g.write(names)
 
 
 
@@ -216,6 +219,42 @@ def install(tb, fl, tf):
         f.write(fl)
 
 
+def uninstall():
+    filelist = []
+    fpi_content = open(config.fpi_log, "r")
+    fpi_ver = fpi_content.read()
+
+    print(
+        "Beginning uninstall of linux-firmware-"
+        + fpi_ver
+        + "."
+    )
+
+
+    print(
+        "Generating list of files to remove."
+    )
+
+    with open(config.files_log, "r") as f:
+        for files in f.readlines():
+            if os.path.exists(os.path.join(config.firmwaredir, files.strip())):
+                print("Found "
+                    + files
+                )
+                print("Removing "
+                    + files
+                )
+                os.remove(os.path.join(config.firmwaredir, files.strip()))
+    print(
+        "Removing dead symlinks."
+    )
+    subprocess.run(["find", config.firmwaredir, "-xtype", "l", "-delete"])
+
+    print(
+        "Removing empty directories."
+    )
+    subprocess.run(["find", config.firmwaredir, "-type", "d", "-empty", "-delete"])
+#            filelist.append(files.rstrip())
 
 def setup():
     temp_flni = tempfile.mkdtemp()
