@@ -9,14 +9,46 @@
 # LICENSE for distribution details.
 #######################################################################
 
-module_dir = "/usr/local/lib/flni/modules"  # Proper python packaging will arrive with version 0.2
 
 import sys
 
-sys.path.append(module_dir)
-
 import flni
 import config
+
+module_dir = "/usr/local/lib/flni/modules"  # Proper python packaging will arrive with version 0.2
+sys.path.append(module_dir)
+
+usage = """
+        Usage: update-firmware-nonfree [options] <arguments>\n
+        Options:
+        --check             Check local and upstream firmware versions only.
+        --install           Download and install latest firmware from kernel.org.
+        --version YYYYMMDD  Download and install specified firmware release from kernel.org.
+        --uninstall         Remove previously installed firmware.
+        --help              This usage text.
+        """
+
+opts = [opt for opt in sys.argv[1:] if opt.startswith("--")]
+
+
+if "--install" in opts:
+    pass
+elif "--check" in opts:
+    flni.check_local()
+    flni.get_latest_firmware()
+    exit()
+elif "--version" in opts:
+    print("Specifying version not yet supported.")
+    exit()
+elif "--uninstall" in opts:
+    flni.uninstall()
+    exit()
+elif "--help" in opts:
+    print(usage)
+    exit()
+else:
+    raise SystemExit(usage)
+
 
 # Set up the environment
 temp_flni = flni.setup()
