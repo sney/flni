@@ -42,7 +42,7 @@ def get_latest_firmware():
     firmware_dates = soup.find_all(string=re.compile("^[0-9]{8}$"))
     firmware_dates.sort()  # The latest will probably always be the top entry, but it costs nothing to make sure
     firmware_latest = firmware_dates[-1]
-    print("Latest firmware is " + firmware_latest)
+    print("Latest upstream firmware is " + firmware_latest)
     return firmware_latest
 
 
@@ -118,29 +118,46 @@ def verify(tb, sg, tf):
 def check_installed(fl, tf):
 
     if os.path.exists(config.fpi_log):
-        fpi_content = open(config.fpi_log, "r")
-        firmware_installed = fpi_content.read()
-        if firmware_installed.rstrip() == fl:
-            cleanup(tf)
-            exit(
-                "Latest firmware already on this system. If this is in error, remove "
-                + config.fpi_log
-                + " and retry."
-            )
-        else:
-            print(
-                "Previous firmware on this system: "
-                + firmware_installed
-                + "\n Upgrading to "
-                + fl
-            )
+        with open(config.fpi_log, "r") as fpi_content:
+            firmware_installed = fpi_content.read()
+            if firmware_installed.rstrip() == fl:
+                cleanup(tf)
+                exit(
+                    "Latest firmware already on this system. If this is in error, remove "
+                    + config.fpi_log
+                    + " and retry. Alternately, specify a specific version to install with --version YYYYMMDD."
+                )
+            else:
+                print(
+                    "Previous firmware on this system: "
+                    + firmware_installed
+                    + "\n Upgrading to "
+                    + fl
+                )
     else:
         print(
             "Previous installation not found. Proceeding with install. WARNING: Manually installed firmware blobs may be overwritten."
         )
 
 
+def check_local():
+    if os.path.exists(config.fpi_log):
+        with open(config.fpi_log, "r") as fpi_content:
+            firmware_installed = fpi_content.read()
+            print(
+                "Local installation found: "
+                + firmware_installed
+                + "."
+            )
+
+    else:
+        print(
+            "Local installation not found."
+        )
+
 def install(tb, fl, tf):
+    #TODO: Optionally skip over existing files from other packages, e.g. firmware-iwlwifi
+
     # Use our temp directory from setup() to unpack tarball
     temp_extract = os.path.join(tf, "extract")
 
@@ -220,15 +237,19 @@ def install(tb, fl, tf):
 
 
 def uninstall():
-    filelist = []
-    fpi_content = open(config.fpi_log, "r")
-    fpi_ver = fpi_content.read()
+    if not os.path.exists(config.files_log):
+        exit(
+            "Cannot read log of installed firmware. Aborting."
+        )
 
-    print(
-        "Beginning uninstall of linux-firmware-"
-        + fpi_ver
-        + "."
-    )
+    filelist = []
+
+    with open(config.fpi_log, "r") as fpi_content:
+        print(
+            "Beginning uninstall of linux-firmware-"
+            + fpi_content.read()
+            + "."
+        )
 
 
     print(
@@ -258,8 +279,14 @@ def uninstall():
     print(
         "Removing installer logs."
     )
-    os.remove(config.fpi_log)
-    os.remove(config.files_log)
+    if os.path.exists(config.fpi_log):
+        os.remove(config.fpi_log)
+    if os.path.exists(config.fpi_log):
+        os.remove(config.files_log)
+
+    print(
+        "Uninstall complete, you may want to update your initramfs."
+    )
 
 
 def setup():
