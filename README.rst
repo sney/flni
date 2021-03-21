@@ -1,4 +1,5 @@
-#FLNI
+FLNI
+####
 
 This is the firmware-linux-nonfree installer. It scrapes `kernel.org’s
 linux-firmware repository`_ for the newest tag, downloads and verifies
@@ -12,12 +13,12 @@ and laptops.
 To install: download flni-main.zip from the Code button above, unpack,
 and run ``make install``
 
-To use: run ``update-firmware-nonfree``
+To use: run ``update-firmware-nonfree --install`` or see ``update-firmware-nonfree --help`` for other usage.
 
 Developed for, and tested on, Debian 10 (buster); will probably work
 unmodified on any debian derivative.
 
-Coming soon: command line switches! better documentation! big-screen
+Coming soon: better documentation! big-screen
 license warnings! surround sound! Ok, maybe not the last one.
 
 .. _kernel.org’s linux-firmware repository: https://git.kernel.org/pub/scm/linux/kernel/git/firmware/linux-firmware.git
