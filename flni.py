@@ -281,7 +281,7 @@ def uninstall():
     )
     if os.path.exists(config.fpi_log):
         os.remove(config.fpi_log)
-    if os.path.exists(config.fpi_log):
+    if os.path.exists(config.files_log):
         os.remove(config.files_log)
 
     print(
