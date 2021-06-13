@@ -29,7 +29,7 @@ import tempfile
 import bs4
 import gnupg
 
-import config
+import flni_config as config
 
 
 def get_latest_firmware():

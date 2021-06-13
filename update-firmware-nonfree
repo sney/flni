@@ -15,8 +15,8 @@ import sys
 module_dir = "/usr/local/lib/flni/modules"  # Proper python packaging will arrive with version 0.2
 sys.path.append(module_dir)
 
-import flni
-import config
+import flni_functions as flni
+import flni_config as config
 
 
 usage = """
